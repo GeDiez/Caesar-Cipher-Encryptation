@@ -1,23 +1,27 @@
 const fs = require('fs')
 
 function isAValidLetter (letter) {
-  return (letter.charCodeAt(0) > 64 && letter.charCodeAt(0) < 91) || (letter.charCodeAt(0) > 96 && letter.charCodeAt(0) < 123)
+  return (letter > 0x60 && letter < 0x7B) || (letter > 0x40 && letter < 0x5B)
+}
 
+function downcaseHexadecimal(letter) {
+  return (letter > 0x40 && letter < 0x5B) ? letter + 0x20 : letter
 }
 
 function getNextLetter(letter) {
-  if (letter === 'z') return 'a'
-  if (letter === 'Z') return 'A'
+  const downcased = downcaseHexadecimal(letter)
 
-  return String.fromCharCode(parseInt(letter.charCodeAt(0)) + 1)
+  if (downcased === 0x7A) return 0x61
+
+  return downcased + 0x01
 }
 
-function incrementAlphanumeric(text) {
-  return text.split('').map(letter => {
-    if(isAValidLetter(letter)) return getNextLetter(letter).toLowerCase()
+function incrementAlphanumeric(buffer) {
+  return buffer.map(letter => {
+    if(isAValidLetter(letter)) return getNextLetter(letter)
 
     return letter
-  }).join('')
+  })
 }
 
 function writeParsedText(text) {
@@ -31,23 +35,10 @@ function readBuffer(fn) {
     if (err) {
       throw Error('Error while loaded file', err)
     }
-    fn(buffer.toString())
+    fn(buffer)
   })
 }
 
-// readBuffer(function (text) {
-//   writeParsedText(incrementAlphanumeric(text))
-// })
-
-// other things
-
-function example(fn) {
-  fs.readFile('./files/don.txt', function(err, buffer) {
-    if (err) {
-      throw Error('Error while loaded file', err)
-    }
-    console.log(buffer)
-  })
-}
-
-example()
+readBuffer(function (text) {
+  writeParsedText(incrementAlphanumeric(text))
+})
