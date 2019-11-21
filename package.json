@@ -1,0 +1,12 @@
+{
+  "name": "encrypt_text",
+  "version": "0.0.1",
+  "description": "implement an algoritm for encrypt messages",
+  "main": "encrypt.js",
+  "author": "Gibran Lopez Morales <gibran@michelada.io>",
+  "license": "MIT",
+  "scripts": {
+    "parse": "node parseText.js",
+    "start": "node encrypt.js"
+  }
+}
